@@ -12,9 +12,9 @@
       130000,
       {
         style: {
-          strokeColor: 'black', // Color of the perimeter
+          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
           lineWidth: 2,
-          fillColor: 'rgba(0, 128, 0, 0.5)'  // Color of the circle
+          fillColor: 'rgba(0, 0, 0, 0.8)'  // Color of the circle
         }
       }
     ));
@@ -28,7 +28,7 @@
       90000,
       {
         style: {
-          strokeColor: 'black', // Color of the perimeter
+          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
           lineWidth: 2,
           fillColor: 'rgba(0, 128, 0, 0)'  // Color of the circle
         }
@@ -44,9 +44,9 @@
       50000,
       {
         style: {
-          strokeColor: 'black', // Color of the perimeter
+          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
           lineWidth: 2,
-          fillColor: 'rgba(0, 128, 0, 0)'  // Color of the circle
+          fillColor: 'rgba(0, 255, 0, 0)'  // Color of the circle
         }
       }
     ));
@@ -55,14 +55,14 @@
   function addDotToMap(map){
     map.addObject(new H.map.Circle(
       // The central point of the circle
-      {lat: 45.327980, lng: 14.437},
+      {lat: 45.347980, lng: 14.475},
       // The radius of the circle in meters
       3000,
       {
         style: {
-          strokeColor: 'black', // Color of the perimeter
+          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
           lineWidth: 2,
-          fillColor: 'black'  // Color of the circle
+          fillColor: 'rgb(0,255,0)'  // Color of the circle
         }
       }
     ));
@@ -72,11 +72,11 @@
     var lineString = new H.geo.LineString();
   
     //lineString.pushPoint({lat:45.328081, lng:14.436539});
-    lineString.pushPoint({lat:46.49, lng:14.436539});
-    lineString.pushPoint({lat:44.166162, lng:14.436539});
+    lineString.pushPoint({lat:46.49, lng:14.469539});
+    lineString.pushPoint({lat:44.166162, lng:14.469539});
   
     map.addObject(new H.map.Polyline(
-      lineString, { style: { lineWidth: 1, strokeColor: "black" }}
+      lineString, { style: { lineWidth: 2, strokeColor: "rgb(0,255,0)" }}
     ));
   }
 
@@ -84,35 +84,30 @@
     var lineString = new H.geo.LineString();
   
     //lineString.pushPoint({lat:45.328081, lng:14.436539});
-    lineString.pushPoint({lat:45.328081, lng:12.81});
-    lineString.pushPoint({lat:45.328081, lng:16.145});
+    lineString.pushPoint({lat:45.348081, lng:12.81});
+    lineString.pushPoint({lat:45.348081, lng:16.145});
   
     map.addObject(new H.map.Polyline(
-      lineString, { style: { lineWidth: 1, strokeColor: "black" }}
+      lineString, { style: { lineWidth: 2, strokeColor: "rgb(0,255,0)" }}
     ));
   }
 
-
-
-
-
   function rotateDomMarker() {
-    var domIconElement = document.createElement('div'),
+    var domIconElement = document.createElement('div'), //(KM) - "div" because = Anchor parameters only works for "H.map.Icon". Use CSS styles to center an "H.map.DomIcon".
         //(KM) interval,
         counter = 0;
   
     // set the anchor using margin css property depending on the content's (svg element below) size
     // to make sure that the icon's center represents the marker's geo positon
-    //(KM) domIconElement.style.margin = '0px 0 0 0px';
+    domIconElement.style.margin = '0px 0 0 0px';
   
     // add content to the element
-    domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="100">
-        <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-          fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#aaa"/>
-      </svg>`;
+    domIconElement.innerHTML = `<svg height="430" width="430">
+    <line x1="0" y1="0" x2="210" y2="210" style="stroke: rgb(0,255,0);stroke-width:5" />
+    </svg>`;
   
     // create dom marker and add it to the map
-    marker = map.addObject(new H.map.DomMarker({lat:45.4, lng:14.32}, {
+    marker = map.addObject(new H.map.DomMarker({lat:46.165, lng:13.3}, {
       icon: new H.map.DomIcon(domIconElement, {
         onAttach: function(clonedElement, domIcon, domMarker) {
           var clonedContent = clonedElement.getElementsByTagName('svg')[0];
@@ -122,7 +117,7 @@
   
           // set interval to rotate icon's content by XX degrees every X second.
           interval = setInterval(function() {
-            clonedContent.style.transform = 'rotate(' + (counter += 15) + 'deg)';
+            clonedContent.style.transform = 'rotate(' + (counter += 10) + 'deg)';
           }, 50)
         },
 
@@ -133,10 +128,7 @@
     }));
   }
 
-
-
-
-
+  
 // Function to generate random number
 function randomLat() {
   return Math.random() * (2.5) + 44;
@@ -205,5 +197,5 @@ window.onload = function () {
   addLine1ToMap(map);
   addLine2ToMap(map);
   addDotToMap(map);
-  rotateDomMarker();
+  rotateDomMarker(map);
 }
