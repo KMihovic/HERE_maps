@@ -1,4 +1,9 @@
 
+// Radar function
+function radarFunction(){
+  window.open("radar.html", "_self");
+
+}
 // Function to generate random number
 function randomLat() {
   return Math.random() * (2.5) + 44;
