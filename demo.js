@@ -1,9 +1,70 @@
 
-// Radar function
-function radarFunction(){
-  window.open("radar.html", "_self");
+// Radar function - only for button 'RANDER AIRPLANES'
+ function radarFunction(){
+ window.open("radar.html", "_self");
+ }
 
-}
+  function addCircle1ToMap(map){
+    map.addObject(new H.map.Circle(
+      // The central point of the circle
+      {lat: 45.327980, lng: 14.476690},
+      // The radius of the circle in meters
+      130000,
+      {
+        style: {
+          strokeColor: 'black', // Color of the perimeter
+          lineWidth: 2,
+          fillColor: 'rgba(0, 128, 0, 0.5)'  // Color of the circle
+        }
+      }
+    ));
+  }
+
+  function addCircle2ToMap(map){
+    map.addObject(new H.map.Circle(
+      // The central point of the circle
+      {lat: 45.327980, lng: 14.476690},
+      // The radius of the circle in meters
+      90000,
+      {
+        style: {
+          strokeColor: 'black', // Color of the perimeter
+          lineWidth: 2,
+          fillColor: 'rgba(0, 128, 0, 0)'  // Color of the circle
+        }
+      }
+    ));
+  }
+
+  function addCircle3ToMap(map){
+    map.addObject(new H.map.Circle(
+      // The central point of the circle
+      {lat: 45.327980, lng: 14.476690},
+      // The radius of the circle in meters
+      50000,
+      {
+        style: {
+          strokeColor: 'black', // Color of the perimeter
+          lineWidth: 2,
+          fillColor: 'rgba(0, 128, 0, 0)'  // Color of the circle
+        }
+      }
+    ));
+  }
+
+  function addPolylineToMap(map) {
+    var lineString = new H.geo.LineString();
+  
+    lineString.pushPoint({lat:45.328081, lng:14.436539});
+    lineString.pushPoint({lat:46.49, lng:14.436539});
+    //lineString.pushPoint({lat:44.166162, lng:14.436539});
+  
+    map.addObject(new H.map.Polyline(
+      lineString, { style: { lineWidth: 3, strokeColor: "black" }}
+    ));
+  }
+
+
 // Function to generate random number
 function randomLat() {
   return Math.random() * (2.5) + 44;
@@ -66,4 +127,8 @@ map.addObject(marker);
 window.onload = function () {
   moveMapToRijeka(map);
   addMarkersToMap(map);
+  addCircle1ToMap(map);
+  addCircle2ToMap(map);
+  addCircle3ToMap(map);
+  addPolylineToMap(map)
 }
