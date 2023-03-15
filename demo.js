@@ -1,10 +1,10 @@
 
-// Radar function - only for button 'RANDER AIRPLANES'
- function radarFunction(){
+// Radar function - for button 'RADAR'
+ function radarFunction() {
  window.open("radar_1/radar.html", "_self");
  }
 
-  function addCircle1ToMap(map){
+  function addCircle1ToMap() {
     map.addObject(new H.map.Circle(
       // The central point of the circle
       {lat: 45.327980, lng: 14.476690},
@@ -20,7 +20,7 @@
     ));
   }
 
-  function addCircle2ToMap(map){
+  function addCircle2ToMap() {
     map.addObject(new H.map.Circle(
       // The central point of the circle
       {lat: 45.327980, lng: 14.476690},
@@ -36,7 +36,7 @@
     ));
   }
 
-  function addCircle3ToMap(map){
+  function addCircle3ToMap() {
     map.addObject(new H.map.Circle(
       // The central point of the circle
       {lat: 45.327980, lng: 14.476690},
@@ -52,7 +52,7 @@
     ));
   }
 
-  function addDotToMap(map){
+  function addDotToMap() {
     map.addObject(new H.map.Circle(
       // The central point of the circle
       {lat: 45.347980, lng: 14.475},
@@ -68,7 +68,7 @@
     ));
   }
 
-  function addLine1ToMap(map) {
+  function addLine1ToMap() {
     var lineString = new H.geo.LineString();
   
     //lineString.pushPoint({lat:45.328081, lng:14.436539});
@@ -80,7 +80,7 @@
     ));
   }
 
-  function addLine2ToMap(map) {
+  function addLine2ToMap() {
     var lineString = new H.geo.LineString();
   
     //lineString.pushPoint({lat:45.328081, lng:14.436539});
@@ -128,7 +128,6 @@
     }));
   }
 
-  
 // Function to generate random number
 function randomLat() {
   return Math.random() * (2.5) + 44;
@@ -163,6 +162,7 @@ var map = new H.Map(document.getElementById('map'),
   zoom: 4,
   pixelRatio: window.devicePixelRatio || 1
 });
+
 // add a resize listener to make sure that the map occupies the whole container
 window.addEventListener('resize', () => map.getViewPort().resize());
 
@@ -191,11 +191,11 @@ map.addObject(marker);
 window.onload = function () {
   moveMapToRijeka(map);
   addMarkersToMap(map);
-  addCircle1ToMap(map);
-  addCircle2ToMap(map);
-  addCircle3ToMap(map);
-  addLine1ToMap(map);
-  addLine2ToMap(map);
-  addDotToMap(map);
-  rotateDomMarker(map);
+  //addCircle1ToMap(map);
+  //addCircle2ToMap(map);
+  //addCircle3ToMap(map);
+  //addLine1ToMap(map);
+  //addLine2ToMap(map);
+  //addDotToMap(map);
+  //rotateDomMarker(map);
 }
