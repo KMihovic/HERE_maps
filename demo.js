@@ -1,7 +1,7 @@
 
 // Radar function - only for button 'RANDER AIRPLANES'
  function radarFunction(){
- window.open("radar.html", "_self");
+ window.open("radar_1/radar.html", "_self");
  }
 
   function addCircle1ToMap(map){
