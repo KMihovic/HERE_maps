@@ -6,13 +6,18 @@
         
         <title>My Map Of Airplanes</title>
         <link rel="icon" href="airplane.ico"/>
+        <link rel="stylesheet" type="text/css" href="../demo.css" />
         <link rel="stylesheet" type="text/css" href="radar.css" />
     </head>
 
     <body>
-        <div><h1>My Map Of Airplanes</h1></div>
-        <button>Random Airplanes</button><br><br>
-        <button>Randar Airplanes</button><br><br>
+        <div><h1>My Map Of Airplanes</h1></div>​
+        <button class="button" onclick=" adddMarker()">Add 20 Airplanes</button>
+        ​<button class="button" onclick=" removeMarker();">Remove Airplanes</button>
+        <button class="button" onclick=" removeMarker(); adddMarker()">Refresh Airplanes</button>
+        <button class="button" onclick=" radarFunction()">Page Refresh</button>
+        <button class="button" onclick=" adddRadar(); rotateDomMarker();">Radar Before Airplanes</button><br><br><br><br>
+        
         <div id="radar">
             <div class="beacon" id="beacon"></div>
             <div class="beacon" id="beacon-75"></div>

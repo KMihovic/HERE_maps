@@ -16,21 +16,15 @@
     </head>
 
     <body>
-        <div><h1>My Map Of Airplanes</h1></div>
-        <button onClick="window.location.reload();">Add 20 Random Airplanes</button><br><br>
-        <button onclick=" radarFunction()">Radar On 2nd Page Before Adding 20 Random Airplanes</button><br><br>
-        <button onclick=" 
-        addCircle1ToMap();
-        addCircle2ToMap();
-        addCircle3ToMap();
-        addDotToMap();
-        addLine1ToMap();
-        addLine2ToMap();
-        rotateDomMarker();
-        ">Radar On This Page Before Adding 20 Random Airplanes</button><br><br>
+        <div><h1>My Map Of Airplanes</h1></div>​
+        <button class="button" onclick=" adddMarker()">Add 20 Airplanes</button>
+        ​<button class="button" onclick=" removeMarker();">Remove Airplanes</button>
+        <button class="button" onclick=" removeMarker(); adddMarker()">Refresh Airplanes</button>
+        <button class="button" onclick=" radarFunction()">Page Refresh</button>
+        <button class="button" onclick=" adddRadar(); rotateDomMarker();">Radar Before Airplanes</button><br>
+        
 
         <div id="map" class="parent"></div>
-
         <script src='demo.js'></script>
     </body>
 </html>

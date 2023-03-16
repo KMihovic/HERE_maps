@@ -1,72 +1,92 @@
-
-// Radar function - for button 'RADAR'
+// Radar function - for button 'RADAR' (KM)
  function radarFunction() {
  window.open("radar_1/radar.html", "_self");
  }
 
-  function addCircle1ToMap() {
-    map.addObject(new H.map.Circle(
-      // The central point of the circle
-      {lat: 45.327980, lng: 14.476690},
-      // The radius of the circle in meters
-      130000,
-      {
-        style: {
-          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-          lineWidth: 2,
-          fillColor: 'rgba(0, 0, 0, 0.8)'  // Color of the circle
-        }
-      }
-    ));
-  }
 
-  function addCircle2ToMap() {
-    map.addObject(new H.map.Circle(
-      // The central point of the circle
-      {lat: 45.327980, lng: 14.476690},
-      // The radius of the circle in meters
-      90000,
-      {
-        style: {
-          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-          lineWidth: 2,
-          fillColor: 'rgba(0, 128, 0, 0)'  // Color of the circle
-        }
-      }
-    ));
-  }
+function adddRadar() {
 
-  function addCircle3ToMap() {
-    map.addObject(new H.map.Circle(
-      // The central point of the circle
-      {lat: 45.327980, lng: 14.476690},
-      // The radius of the circle in meters
-      50000,
-      {
-        style: {
-          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-          lineWidth: 2,
-          fillColor: 'rgba(0, 255, 0, 0)'  // Color of the circle
-        }
-      }
-    ));
-  }
+  group = new H.map.Group(); // Create a group that can hold map objects (KM)
+  map.addObject(group); 
+  circle = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.327980, lng: 14.476690},
+    // The radius of the circle in meters
+    130000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgba(0, 0, 0, 0.8)'  // Color of the circle
+      }});  
+  group.addObject(circle);
 
-  function addDotToMap() {
-    map.addObject(new H.map.Circle(
-      // The central point of the circle
-      {lat: 45.347980, lng: 14.475},
-      // The radius of the circle in meters
-      3000,
-      {
-        style: {
-          strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-          lineWidth: 2,
-          fillColor: 'rgb(0,255,0)'  // Color of the circle
-        }
-      }
-    ));
+
+  map.addObject(group); 
+  circle = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.327980, lng: 14.476690},
+    // The radius of the circle in meters
+    90000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgba(0, 0, 0, 0)'  // Color of the circle
+      }});  
+  group.addObject(circle);
+
+
+  map.addObject(group); 
+  circle = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.327980, lng: 14.476690},
+    // The radius of the circle in meters
+    50000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgba(0, 0, 0, 0)'  // Color of the circle
+      }});  
+  group.addObject(circle);
+
+
+  map.addObject(group); 
+  dot = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.347980, lng: 14.475},
+    // The radius of the circle in meters
+    3000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgb(0,255,0)'  // Color of the circle
+      }});
+  group.addObject(dot);
+}
+
+function removeRadar() {
+  map.removeObject(group);
+}
+
+
+
+/*
+map.addObject(new H.map.Circle(
+  // The central point of the circle
+  {lat: 45.327980, lng: 14.476690},
+  // The radius of the circle in meters
+  90000,
+  {
+    style: {
+      strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+      lineWidth: 2,
+      fillColor: 'rgba(0, 255, 0, 0)'  // Color of the circle
+    }
   }
+));
 
   function addLine1ToMap() {
     var lineString = new H.geo.LineString();
@@ -79,18 +99,9 @@
       lineString, { style: { lineWidth: 2, strokeColor: "rgb(0,255,0)" }}
     ));
   }
+*/
 
-  function addLine2ToMap() {
-    var lineString = new H.geo.LineString();
-  
-    //lineString.pushPoint({lat:45.328081, lng:14.436539});
-    lineString.pushPoint({lat:45.348081, lng:12.81});
-    lineString.pushPoint({lat:45.348081, lng:16.145});
-  
-    map.addObject(new H.map.Polyline(
-      lineString, { style: { lineWidth: 2, strokeColor: "rgb(0,255,0)" }}
-    ));
-  }
+
 
   function rotateDomMarker() {
     var domIconElement = document.createElement('div'), //(KM) - "div" because = Anchor parameters only works for "H.map.Icon". Use CSS styles to center an "H.map.DomIcon".
@@ -120,13 +131,17 @@
             clonedContent.style.transform = 'rotate(' + (counter += 10) + 'deg)';
           }, 50)
         },
-
-        //(KM) onDetach: function(clonedElement, domIcon, domMarker) {
-          // stop the rotation if dom icon is not in map's viewport
-          //(KM) clearInterval(interval);}
       })
     }));
+    setTimeout(removeRadar, 4800);
+    setTimeout(removeRotLine, 5000);
+    setTimeout(adddMarker, 5500);
   }
+
+  function removeRotLine() {
+    map.removeObject(marker);
+  }
+
 
 // Function to generate random number
 function randomLat() {
@@ -142,11 +157,33 @@ function moveMapToRijeka(map){
   map.setZoom(8);
 }
 
-function addMarkersToMap(map) {
+var plane = 0;
+function adddMarker() {
+  if (plane == 0) {
+    // Create a group that can hold map objects
+    group = new H.map.Group();
+
     for (i = 0; i < 20; i++) {
-      var planeMarker = new H.map.Marker({lat:randomLat(), lng:randomLng()}, { icon: pngIcon });
-      map.addObject(planeMarker);
+    // Add the group to the map object (created earlier):
+    map.addObject(group);
+
+    // Create a marker:
+    marker = new H.map.Marker({lat:randomLat(), lng:randomLng()}, { icon: pngIcon });
+
+    // Add the marker to the group (which causes 
+    // it to be displayed on the map)
+    group.addObject(marker);
+
+    plane = 1;
 }}
+}
+
+function removeMarker() {
+  map.removeObject(group);
+  if (plane == 1) {
+    plane = 0;
+}}
+
 
 //Step 1: initialize communication with the platform
 // In your own code, replace variable window.apikey with your own apikey
@@ -190,12 +227,5 @@ map.addObject(marker);
 // Now use the map as required...
 window.onload = function () {
   moveMapToRijeka(map);
-  addMarkersToMap(map);
-  //addCircle1ToMap(map);
-  //addCircle2ToMap(map);
-  //addCircle3ToMap(map);
-  //addLine1ToMap(map);
-  //addLine2ToMap(map);
-  //addDotToMap(map);
-  //rotateDomMarker(map);
+  //addMarkersToMap(map);
 }
