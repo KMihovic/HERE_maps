@@ -1,162 +1,86 @@
-// Radar function - for button 'RADAR' (KM)
- function radarFunction() {
- window.open("radar_1/radar.html", "_self");
- }
+// HERE MAP + MARKER IN CENTER (RIJEKA)----------------------------------------
+// Step 1: initialize communication with the platform
+var platform = new H.service.Platform({
+  apikey: 'whatewerIPutHereItWorks???'
+});
+var defaultLayers = platform.createDefaultLayers();
 
+//Step 2: initialize a map - this map is centered over Europe
+var map = new H.Map(document.getElementById('map'),
+  defaultLayers.vector.normal.map,{
+  center: {lat:50, lng:5},
+  zoom: 4,
+  pixelRatio: window.devicePixelRatio || 1
+});
 
-function adddRadar() {
+// add a resize listener to make sure that the map occupies the whole container
+window.addEventListener('resize', () => map.getViewPort().resize());
 
-  group = new H.map.Group(); // Create a group that can hold map objects (KM)
-  map.addObject(group); 
-  circle = new H.map.Circle(
-    // The central point of the circle
-    {lat: 45.327980, lng: 14.476690},
-    // The radius of the circle in meters
-    130000,
-    {
-      style: {
-        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-        lineWidth: 2,
-        fillColor: 'rgba(0, 0, 0, 0.8)'  // Color of the circle
-      }});  
-  group.addObject(circle);
+//Step 3: make the map interactive
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
+// Create the default UI components
+var ui = H.ui.UI.createDefault(map, defaultLayers);
 
-  map.addObject(group); 
-  circle = new H.map.Circle(
-    // The central point of the circle
-    {lat: 45.327980, lng: 14.476690},
-    // The radius of the circle in meters
-    90000,
-    {
-      style: {
-        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-        lineWidth: 2,
-        fillColor: 'rgba(0, 0, 0, 0)'  // Color of the circle
-      }});  
-  group.addObject(circle);
+// Marker code goes here
+var LocationOfMarker = { lat: 45.327980, lng: 14.476690 };
 
+// Create a marker icon from an image URL:
+var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 40, h: 40 } });
 
-  map.addObject(group); 
-  circle = new H.map.Circle(
-    // The central point of the circle
-    {lat: 45.327980, lng: 14.476690},
-    // The radius of the circle in meters
-    50000,
-    {
-      style: {
-        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-        lineWidth: 2,
-        fillColor: 'rgba(0, 0, 0, 0)'  // Color of the circle
-      }});  
-  group.addObject(circle);
+// Create a marker using the previously instantiated icon:
+var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
 
+// Add the marker to the map:
+map.addObject(marker);
 
-  map.addObject(group); 
-  dot = new H.map.Circle(
-    // The central point of the circle
-    {lat: 45.347980, lng: 14.475},
-    // The radius of the circle in meters
-    3000,
-    {
-      style: {
-        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-        lineWidth: 2,
-        fillColor: 'rgb(0,255,0)'  // Color of the circle
-      }});
-  group.addObject(dot);
-}
-
-function removeRadar() {
-  map.removeObject(group);
+// Now use the map as required...
+window.onload = function () {
+  moveMapToRijeka(map);
 }
 
 
+// ADDING DATA FROM OPENSKY PLATFORM ------------------------------------------
+// Retrieve flight data for Croatia
+const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
 
-/*
-map.addObject(new H.map.Circle(
-  // The central point of the circle
-  {lat: 45.327980, lng: 14.476690},
-  // The radius of the circle in meters
-  90000,
-  {
-    style: {
-      strokeColor: 'rgb(0,255,0)', // Color of the perimeter
-      lineWidth: 2,
-      fillColor: 'rgba(0, 255, 0, 0)'  // Color of the circle
-    }
-  }
-));
+// Retrieve flight data using fetch
+fetch(url)
+  .then(response => response.json())
+  .then(data => {
 
-  function addLine1ToMap() {
-    var lineString = new H.geo.LineString();
-  
-    //lineString.pushPoint({lat:45.328081, lng:14.436539});
-    lineString.pushPoint({lat:46.49, lng:14.469539});
-    lineString.pushPoint({lat:44.166162, lng:14.469539});
-  
-    map.addObject(new H.map.Polyline(
-      lineString, { style: { lineWidth: 2, strokeColor: "rgb(0,255,0)" }}
-    ));
-  }
-*/
+    // Parse flight data
+    const flights = data.states;
+    
+    // Select a random flight
+    const randomIndex = Math.floor(Math.random() * flights.length);
+    const flight = flights[randomIndex];
+    
+    // Extract flight information
+    const flightId = flight[0];     //Now we dont use but later we will use it for flight ID
+    const latitude = flight[6];
+    const longitude = flight[5];
+ 
+    // Create a marker icon from an image URL:
+    var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 40, h: 40 } });
 
+    const marker = new H.map.Marker({lat: latitude, lng: longitude}, { icon: pngIcon });
+    map.addObject(marker);
+  });
 
 
-  function rotateDomMarker() {
-    var domIconElement = document.createElement('div'), //(KM) - "div" because = Anchor parameters only works for "H.map.Icon". Use CSS styles to center an "H.map.DomIcon".
-        //(KM) interval,
-        counter = 0;
-  
-    // set the anchor using margin css property depending on the content's (svg element below) size
-    // to make sure that the icon's center represents the marker's geo positon
-    domIconElement.style.margin = '0px 0 0 0px';
-  
-    // add content to the element
-    domIconElement.innerHTML = `<svg height="430" width="430">
-    <line x1="0" y1="0" x2="210" y2="210" style="stroke: rgb(0,255,0);stroke-width:5" />
-    </svg>`;
-  
-    // create dom marker and add it to the map
-    marker = map.addObject(new H.map.DomMarker({lat:46.165, lng:13.3}, {
-      icon: new H.map.DomIcon(domIconElement, {
-        onAttach: function(clonedElement, domIcon, domMarker) {
-          var clonedContent = clonedElement.getElementsByTagName('svg')[0];
-  
-          // set last used value for rotation when dom icon is attached (back in map's viewport)
-          //(KM) clonedContent.style.transform = 'rotate(' + counter + 'deg)';
-  
-          // set interval to rotate icon's content by XX degrees every X second.
-          interval = setInterval(function() {
-            clonedContent.style.transform = 'rotate(' + (counter += 10) + 'deg)';
-          }, 50)
-        },
-      })
-    }));
-    setTimeout(removeRadar, 4800);
-    setTimeout(removeRotLine, 5000);
-    setTimeout(adddMarker, 5500);
-  }
-
-  function removeRotLine() {
-    map.removeObject(marker);
-  }
-
-
+// ADDING & REMOVING 20 RANDOM AIRPLANES --------------------------------------
 // Function to generate random number
 function randomLat() {
   return Math.random() * (2.5) + 44;
 }
-
 function randomLng() {
   return Math.random() * (9.5) + 9.5;
 }
-
 function moveMapToRijeka(map){
-  map.setCenter({lat:45.328081, lng:14.436539});
+  map.setCenter({lat:45.328081, lng:14.4});
   map.setZoom(8);
 }
-
 var plane = 0;
 function adddMarker() {
   if (plane == 0) {
@@ -177,7 +101,6 @@ function adddMarker() {
     plane = 1;
 }}
 }
-
 function removeMarker() {
   map.removeObject(group);
   if (plane == 1) {
@@ -185,47 +108,111 @@ function removeMarker() {
 }}
 
 
-//Step 1: initialize communication with the platform
-// In your own code, replace variable window.apikey with your own apikey
-var platform = new H.service.Platform({
-  apikey: 'whatewerIPutHereItWorks???'
-});
-var defaultLayers = platform.createDefaultLayers();
+// RADAR FUNCTIONS ------------------------------------------------------------
+function adddRadar() {
+  group = new H.map.Group(); // Create a group that can hold map objects (KM)
+  map.addObject(group); 
+  circle = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.327980, lng: 14.476690},
+    // The radius of the circle in meters
+    130000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgba(0, 0, 0, 0.8)'  // Color of the circle
+      }});  
+  group.addObject(circle);
 
-//Step 2: initialize a map - this map is centered over Europe
-var map = new H.Map(document.getElementById('map'),
-  defaultLayers.vector.normal.map,{
-  center: {lat:50, lng:5},
-  zoom: 4,
-  pixelRatio: window.devicePixelRatio || 1
-});
+  map.addObject(group); 
+  circle = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.327980, lng: 14.476690},
+    // The radius of the circle in meters
+    90000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgba(0, 0, 0, 0)'  // Color of the circle
+      }});  
+  group.addObject(circle);
 
-// add a resize listener to make sure that the map occupies the whole container
-window.addEventListener('resize', () => map.getViewPort().resize());
+  map.addObject(group); 
+  circle = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.327980, lng: 14.476690},
+    // The radius of the circle in meters
+    50000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgba(0, 0, 0, 0)'  // Color of the circle
+      }});  
+  group.addObject(circle);
 
-//Step 3: make the map interactive
-// MapEvents enables the event system
-// Behavior implements default interactions for pan/zoom (also on mobile touch environments)
-var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-
-// Create the default UI components
-var ui = H.ui.UI.createDefault(map, defaultLayers);
-
-// Marker code goes here
-var LocationOfMarker = { lat: 45.327980, lng: 14.476690 };
-
-// Create a marker icon from an image URL:
-var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 40, h: 40 } });
-
-// Create a marker using the previously instantiated icon:
-var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
-
-// Add the marker to the map:
-map.addObject(marker);
-
-
-// Now use the map as required...
-window.onload = function () {
-  moveMapToRijeka(map);
-  //addMarkersToMap(map);
+  map.addObject(group); 
+  dot = new H.map.Circle(
+    // The central point of the circle
+    {lat: 45.347980, lng: 14.475},
+    // The radius of the circle in meters
+    3000,
+    {
+      style: {
+        strokeColor: 'rgb(0,255,0)', // Color of the perimeter
+        lineWidth: 2,
+        fillColor: 'rgb(0,255,0)'  // Color of the circle
+      }});
+  group.addObject(dot);
 }
+
+function removeRadar() {
+  map.removeObject(group);
+}
+
+function rotateDomMarker() {
+  //"div" because = Anchor parameters only works for "H.map.Icon". Use CSS styles to center an "H.map.DomIcon".
+  var domIconElement = document.createElement('div'), 
+  counter = 0;
+
+  // set the anchor using margin css property depending on the content's (svg element below) size
+  // to make sure that the icon's center represents the marker's geo positon
+  domIconElement.style.margin = '0px 0 0 0px';
+
+  // add content to the element
+  domIconElement.innerHTML = `<svg height="430" width="430">
+  <line x1="0" y1="0" x2="210" y2="210" style="stroke: rgb(0,255,0);stroke-width:5" />
+  </svg>`;
+
+  // create dom marker and add it to the map
+  marker = map.addObject(new H.map.DomMarker({lat:46.165, lng:13.3}, {
+    icon: new H.map.DomIcon(domIconElement, {
+      onAttach: function(clonedElement, domIcon, domMarker) {
+        var clonedContent = clonedElement.getElementsByTagName('svg')[0];
+
+        // set last used value for rotation when dom icon is attached (back in map's viewport)
+        //(KM) clonedContent.style.transform = 'rotate(' + counter + 'deg)';
+
+        // set interval to rotate icon's content by XX degrees every X second.
+        interval = setInterval(function() {
+          clonedContent.style.transform = 'rotate(' + (counter += 10) + 'deg)';
+        }, 50)
+      },
+    })
+  }));
+  setTimeout(removeRadar, 4800);
+  setTimeout(removeRotLine, 5000);
+  setTimeout(adddMarker, 5500);
+}
+
+function removeRotLine() {
+  map.removeObject(marker);
+}
+
+
+// OPENING RADAR ON ANOTHER PAGE ----------------------------------------------
+function radarFunction() {
+  window.open("radar_1/radar.html", "_self");
+ }
