@@ -26,10 +26,10 @@ var ui = H.ui.UI.createDefault(map, defaultLayers);
 var LocationOfMarker = { lat: 45.327980, lng: 14.476690 };
 
 // Create a marker icon from an image URL:
-var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 50, h: 50 } });
+var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 } });
 
 // Create a marker using the previously instantiated icon:
-var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
+//var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
 
 // Add the marker to the map:
 // map.addObject(marker);
@@ -65,14 +65,18 @@ fetch(url)
       const geo_altitude = flight[13];
 
       // Create a marker icon from an image URL:
-      var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 30, h: 30 } });
+      //var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 30, h: 30}});
 
       function addMarkerToGroup(group, coordinate, html) {
         const marker = new H.map.Marker(coordinate, { icon: pngIcon });
+
         marker.setData(html);
+
         group.addObject(marker);
+
         //map.addObject(marker);
       }
+
       function addInfoBubble(map) {
         var group = new H.map.Group();
     
@@ -92,13 +96,14 @@ fetch(url)
         addMarkerToGroup(group, {lat:latitude, lng:longitude},
           '<b>Flight ID:</b>' + flightId +
           '<br><b>Country:</b>' + origin_country +
-          '<br><b>Barometric_Altitude</b>:' + baro_altitude +
+          '<br><b>Barometric_Altitude</b>:' + baro_altitude + 'm' + 
           '<br><b>On_Ground:</b>' + on_ground +
           '<br><b>Velocity:</b>' + velocity + 'm/s' + 
-          '<br><b>True_Track:</b>' + true_track +
-          '<br><b>Geo_Altitude:</b>' + geo_altitude);
+          '<br><b>True_Track:</b>' + true_track + '°' + 
+          '<br><b>Geo_Altitude:</b>' + geo_altitude + 'm');
       }
       addInfoBubble(map);
+
     }
     });  
 
