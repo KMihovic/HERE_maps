@@ -8,13 +8,29 @@ var defaultLayers = platform.createDefaultLayers();
 //Step 2: initialize a map - this map is centered over Europe
 var map = new H.Map(document.getElementById('map'),
   defaultLayers.vector.normal.map,{
-  center: {lat:50, lng:5},
-  zoom: 4,
-  pixelRatio: window.devicePixelRatio || 1
+  center: {lat:45.328081, lng:14.4},
 });
 
-// add a resize listener to make sure that the map occupies the whole container
-window.addEventListener('resize', () => map.getViewPort().resize());
+var minZoom = 9;
+var maxZoom = 14;
+
+// Add an event listener to detect when the map view has changed
+map.addEventListener('mapviewchange', function(event) {
+  var zoomLevel = map.getZoom();
+
+  // Check if the zoom level is greater than the maximum
+  if (zoomLevel > maxZoom) {
+      // Set the zoom level to the maximum
+      map.setZoom(maxZoom);
+  }
+
+  // Check if the zoom level is less than the minimum
+  if (zoomLevel < minZoom) {
+      // Set the zoom level to the minimum
+      map.setZoom(minZoom);
+  }
+});
+
 
 //Step 3: make the map interactive
 var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
@@ -23,7 +39,7 @@ var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 var ui = H.ui.UI.createDefault(map, defaultLayers);
 
 // Marker code goes here
-var LocationOfMarker = { lat: 45.327980, lng: 14.476690 };
+//var LocationOfMarker = { lat: 45.327980, lng: 14.476690 };
 
 // Create a marker icon from an image URL:
 var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 } });
@@ -34,10 +50,13 @@ var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-de
 // Add the marker to the map:
 // map.addObject(marker);
 
+
+/*
 // Now use the map as required...
 window.onload = function () {
   moveMapToRijeka(map);
 }
+*/
 
 
 // ADDING DATA FROM OPENSKY PLATFORM ------------------------------------------
@@ -73,8 +92,6 @@ fetch(url)
         marker.setData(html);
 
         group.addObject(marker);
-
-        //map.addObject(marker);
       }
 
       function addInfoBubble(map) {
@@ -161,7 +178,7 @@ fetch(url)
   });    
 */
 
-  
+
 // ADDING & REMOVING 20 RANDOM AIRPLANES --------------------------------------
 // Function to generate random number
 function randomLat() {
@@ -170,10 +187,16 @@ function randomLat() {
 function randomLng() {
   return Math.random() * (9.5) + 9.5;
 }
+
+
+/*
 function moveMapToRijeka(map){
   map.setCenter({lat:45.328081, lng:14.4});
-  map.setZoom(8);
+  map.setZoom(9);
 }
+*/
+
+
 var plane = 0;
 function adddMarker() {
   if (plane == 0) {
@@ -199,6 +222,7 @@ function removeMarker() {
   if (plane == 1) {
     plane = 0;
 }}
+
 
 
 // RADAR FUNCTIONS ------------------------------------------------------------
@@ -305,7 +329,9 @@ function removeRotLine() {
 }
 
 
+/*
 // OPENING RADAR ON ANOTHER PAGE ----------------------------------------------
 function radarFunction() {
   window.open("radar_1/radar.html", "_self");
  }
+ */
