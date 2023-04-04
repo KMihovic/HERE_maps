@@ -8,6 +8,7 @@ var defaultLayers = platform.createDefaultLayers();
 //Step 2: initialize a map - this map is centered over Europe
 var map = new H.Map(document.getElementById('map'),
   defaultLayers.vector.normal.map,{
+  zoom: 10,
   center: {lat:45.328081, lng:14.4},
 });
 
@@ -15,7 +16,7 @@ var minZoom = 9;
 var maxZoom = 14;
 
 // Add an event listener to detect when the map view has changed
-map.addEventListener('mapviewchange', function(event) {
+map.addEventListener('mapviewchange', function() {
   var zoomLevel = map.getZoom();
 
   // Check if the zoom level is greater than the maximum
@@ -23,7 +24,6 @@ map.addEventListener('mapviewchange', function(event) {
       // Set the zoom level to the maximum
       map.setZoom(maxZoom);
   }
-
   // Check if the zoom level is less than the minimum
   if (zoomLevel < minZoom) {
       // Set the zoom level to the minimum
@@ -58,71 +58,101 @@ window.onload = function () {
 }
 */
 
+/*
+  var bounds = map.getBounds();
+  const url = `https://opensky-network.org/api/states/all?lamin=${bounds.getSouth()}&lomin=${bounds.getWest()}&lamax=${bounds.getNorth()}&lomax=${bounds.getEast()}`;
+
+  const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
+  const url = `https://opensky-network.org/api/states/all?lamin=${south}&lomin=${west}&lamax=${north}&lomax=${east}`;
+  */
+
 
 // ADDING DATA FROM OPENSKY PLATFORM ------------------------------------------
 // Retrieve flight data for Croatia
-const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
+function fetchFlightData() {
+  // Get the current bounding box of the map
+  const boundingBox = map.getViewModel().getLookAtData().bounds.getBoundingBox();
+  // Get the boundaries of the bounding box
+  const south = boundingBox.getBottom();
+  const west = boundingBox.getLeft();
+  const north = boundingBox.getTop();
+  const east = boundingBox.getRight();
 
-// Retrieve flight data using fetch
-fetch(url)
-  .then(response => response.json())
-  .then(data => {
-    // Parse flight data
-    const flights = data.states;
-    
-    for (i = 0; i < flights.length; i++) {
-      const flight = flights[i];
-      // Extract flight information
-      const flightId = flight[0];
-      const origin_country = flight[2];
-      const longitude = flight[5];
-      const latitude = flight[6];
-      const baro_altitude = flight[7];
-      const on_ground = flight[8];
-      const velocity = flight[9];
-      const true_track = flight[10];
-      const geo_altitude = flight[13];
-
-      // Create a marker icon from an image URL:
-      //var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 30, h: 30}});
-
-      function addMarkerToGroup(group, coordinate, html) {
-        const marker = new H.map.Marker(coordinate, { icon: pngIcon });
-
-        marker.setData(html);
-
-        group.addObject(marker);
-      }
-
-      function addInfoBubble(map) {
-        var group = new H.map.Group();
-    
-        map.addObject(group);
-        // add 'tap' event listener, that opens info bubble, to the group
-        group.addEventListener('tap', function (evt) {
-          // event target is the marker itself, group is a parent event target
-          // for all objects that it contains
-          var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
-            // read custom data
-            content: evt.target.getData()
-          });
-          // show info bubble
-          ui.addBubble(bubble);
-        }, false);
+  fetch(`https://opensky-network.org/api/states/all?lamin=${south}&lomin=${west}&lamax=${north}&lomax=${east}`)
+    .then(response => response.json())
+    .then(data => {
+      // Parse flight data
+      const flights = data.states;
       
-        addMarkerToGroup(group, {lat:latitude, lng:longitude},
-          '<b>Flight ID:</b>' + flightId +
-          '<br><b>Country:</b>' + origin_country +
-          '<br><b>Barometric_Altitude</b>:' + baro_altitude + 'm' + 
-          '<br><b>On_Ground:</b>' + on_ground +
-          '<br><b>Velocity:</b>' + velocity + 'm/s' + 
-          '<br><b>True_Track:</b>' + true_track + '°' + 
-          '<br><b>Geo_Altitude:</b>' + geo_altitude + 'm');
-      }
-      addInfoBubble(map);
+      for (i = 0; i < flights.length; i++) {
+        const flight = flights[i];
+        // Extract flight information
+        const flightId = flight[0];
+        const origin_country = flight[2];
+        const longitude = flight[5];
+        const latitude = flight[6];
+        const baro_altitude = flight[7];
+        const on_ground = flight[8];
+        const velocity = flight[9];
+        const true_track = flight[10];
+        const geo_altitude = flight[13];
 
+        // Create a marker icon from an image URL:
+        //var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 30, h: 30}});
+
+        function addMarkerToGroup(group, coordinate, html) {
+          const marker = new H.map.Marker(coordinate, { icon: pngIcon });
+
+          marker.setData(html);
+
+          group.addObject(marker);
+        }
+
+        function addInfoBubble(map) {
+          var group = new H.map.Group();
+      
+          map.addObject(group);
+          // add 'tap' event listener, that opens info bubble, to the group
+          group.addEventListener('tap', function (evt) {
+            // event target is the marker itself, group is a parent event target
+            // for all objects that it contains
+            var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+              // read custom data
+              content: evt.target.getData()
+            });
+            // show info bubble
+            ui.addBubble(bubble);
+          }, false);
+        
+          addMarkerToGroup(group, {lat:latitude, lng:longitude},
+            '<b>Flight ID:</b>' + flightId +
+            '<br><b>Country:</b>' + origin_country +
+            '<br><b>Barometric_Altitude</b>:' + baro_altitude + 'm' + 
+            '<br><b>On_Ground:</b>' + on_ground +
+            '<br><b>Velocity:</b>' + velocity + 'm/s' + 
+            '<br><b>True_Track:</b>' + true_track + '°' + 
+            '<br><b>Geo_Altitude:</b>' + geo_altitude + 'm');
+        }
+        addInfoBubble(map);
+
+      }
+      });
     }
-    });  
+// Fetch flight data for the first time
+fetchFlightData();
+
+
+
+// refresh the flight data every X seconds-------------------------------------
+setInterval(function() {
+  // remove all existing flight markers from the map
+  map.removeObjects(map.getObjects());
+
+  // call the addFlightsToMap function again to add the updated flight data to the map
+  fetchFlightData();
+}, 3000);
+
+
 
 
 /*
@@ -177,6 +207,7 @@ fetch(url)
     addInfoBubble(map);
   });    
 */
+
 
 
 // ADDING & REMOVING 20 RANDOM AIRPLANES --------------------------------------
