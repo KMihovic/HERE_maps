@@ -38,8 +38,8 @@ var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 var ui = H.ui.UI.createDefault(map, defaultLayers);
 
 // Create a marker icon from an image URL:
-var iconGround = new H.map.Icon("https://cdn0.iconfinder.com/data/icons/coronavirus-protection/64/airplane_coronavirus_covid19_travel_prohibit_ban0-512.png", { size: { w: 35, h: 35 } });
-var iconAir = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 } });
+var iconGround = new H.map.Icon("https://cdn0.iconfinder.com/data/icons/coronavirus-protection/64/airplane_coronavirus_covid19_travel_prohibit_ban0-512.png", { size: { w: 35, h: 35 }});
+var iconAir = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 }, anchor: { x: 17, y: 17 }, angle: 55 });
 
 // Create a marker using the previously instantiated icon:
 //var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
@@ -60,6 +60,29 @@ window.onload = function () {
   const url = `https://opensky-network.org/api/states/all?lamin=${bounds.getSouth()}&lomin=${bounds.getWest()}&lamax=${bounds.getNorth()}&lomax=${bounds.getEast()}`;
   const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
   */
+
+
+
+// SAVING LAST POSITION & ZOOM TO LOCALSTORAGE---------------------------------
+//Activated every time map position or zoom changes
+map.addEventListener('mapviewchangeend', function() {
+  //get center and zoom
+  var position = map.getCenter();
+  var zoom = map.getZoom();
+  //store the position and zoom values in localStorage
+  localStorage.setItem('mapPosition', JSON.stringify(position));
+  localStorage.setItem('mapZoom', zoom);
+  });
+  
+//retrieve the last saved position and zoom when the page loads
+var savedPosition = JSON.parse(localStorage.getItem('mapPosition'));
+var savedZoom = localStorage.getItem('mapZoom');
+
+if (savedPosition && savedZoom) {
+  map.setCenter(savedPosition);
+  map.setZoom(savedZoom);
+}
+
 
 
 // ADDING DATA FROM OPENSKY PLATFORM ------------------------------------------
