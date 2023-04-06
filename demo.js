@@ -31,18 +31,15 @@ map.addEventListener('mapviewchange', function() {
   }
 });
 
-
 //Step 3: make the map interactive
 var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
 // Create the default UI components
 var ui = H.ui.UI.createDefault(map, defaultLayers);
 
-// Marker code goes here
-//var LocationOfMarker = { lat: 45.327980, lng: 14.476690 };
-
 // Create a marker icon from an image URL:
-var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 } });
+var iconGround = new H.map.Icon("https://cdn0.iconfinder.com/data/icons/coronavirus-protection/64/airplane_coronavirus_covid19_travel_prohibit_ban0-512.png", { size: { w: 35, h: 35 } });
+var iconAir = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 } });
 
 // Create a marker using the previously instantiated icon:
 //var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
@@ -61,9 +58,7 @@ window.onload = function () {
 /*
   var bounds = map.getBounds();
   const url = `https://opensky-network.org/api/states/all?lamin=${bounds.getSouth()}&lomin=${bounds.getWest()}&lamax=${bounds.getNorth()}&lomax=${bounds.getEast()}`;
-
   const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
-  const url = `https://opensky-network.org/api/states/all?lamin=${south}&lomin=${west}&lamax=${north}&lomax=${east}`;
   */
 
 
@@ -97,14 +92,12 @@ function fetchFlightData() {
         const true_track = flight[10];
         const geo_altitude = flight[13];
 
-        // Create a marker icon from an image URL:
-        //var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 30, h: 30}});
-
         function addMarkerToGroup(group, coordinate, html) {
-          const marker = new H.map.Marker(coordinate, { icon: pngIcon });
-
+          // Sets icon by flight[8] - on_ground true or false
+          const icon = flight[8] ? iconGround : iconAir;
+          const marker = new H.map.Marker({lat: flight[6], lng: flight[5]}, (coordinate, {icon: icon}));
+          
           marker.setData(html);
-
           group.addObject(marker);
         }
 
@@ -143,15 +136,28 @@ fetchFlightData();
 
 
 
-// refresh the flight data every X seconds-------------------------------------
+// AUTOREFRESH EVERY 5 SECONDS-------------------------------------------------
 setInterval(function() {
+  
   // remove all existing flight markers from the map
   map.removeObjects(map.getObjects());
 
   // call the addFlightsToMap function again to add the updated flight data to the map
   fetchFlightData();
-}, 3000);
+}, 5000);
 
+
+
+// ADD REFRESH BUTTON----------------------------------------------------------
+const refreshButton = document.getElementById('refreshButton');
+refreshButton.addEventListener('click', () => {
+
+ // remove all existing flight markers from the map
+ map.removeObjects(map.getObjects());
+
+ // call the addFlightsToMap function again to add the updated flight data to the map
+ fetchFlightData();
+});
 
 
 
