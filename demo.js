@@ -1,11 +1,10 @@
-// HERE MAP + MARKER IN CENTER (RIJEKA)----------------------------------------
-// Step 1: initialize communication with the platform
+// Initialize communication with the platform
 var platform = new H.service.Platform({
   apikey: 'whatewerIPutHereItWorks???'
 });
 var defaultLayers = platform.createDefaultLayers();
 
-//Step 2: initialize a map - this map is centered over Europe
+// Initialize a map - this map is centered over Europe
 var map = new H.Map(document.getElementById('map'),
   defaultLayers.vector.normal.map,{
   zoom: 10,
@@ -14,7 +13,6 @@ var map = new H.Map(document.getElementById('map'),
 
 var minZoom = 9;
 var maxZoom = 14;
-
 // Add an event listener to detect when the map view has changed
 map.addEventListener('mapviewchange', function() {
   var zoomLevel = map.getZoom();
@@ -31,7 +29,7 @@ map.addEventListener('mapviewchange', function() {
   }
 });
 
-//Step 3: make the map interactive
+// Make the map interactive
 var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
 // Create the default UI components
@@ -39,27 +37,7 @@ var ui = H.ui.UI.createDefault(map, defaultLayers);
 
 // Create a marker icon from an image URL:
 var iconGround = new H.map.Icon("https://cdn0.iconfinder.com/data/icons/coronavirus-protection/64/airplane_coronavirus_covid19_travel_prohibit_ban0-512.png", { size: { w: 35, h: 35 }});
-var iconAir = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 }, anchor: { x: 17, y: 17 }, angle: 55 });
-
-// Create a marker using the previously instantiated icon:
-//var marker = new H.map.Marker(LocationOfMarker, { icon: pngIcon });
-
-// Add the marker to the map:
-// map.addObject(marker);
-
-
-/*
-// Now use the map as required...
-window.onload = function () {
-  moveMapToRijeka(map);
-}
-*/
-
-/*
-  var bounds = map.getBounds();
-  const url = `https://opensky-network.org/api/states/all?lamin=${bounds.getSouth()}&lomin=${bounds.getWest()}&lamax=${bounds.getNorth()}&lomax=${bounds.getEast()}`;
-  const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
-  */
+var iconAir = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 35, h: 35 }});
 
 
 
@@ -73,7 +51,6 @@ map.addEventListener('mapviewchangeend', function() {
   localStorage.setItem('mapPosition', JSON.stringify(position));
   localStorage.setItem('mapZoom', zoom);
   });
-  
 //retrieve the last saved position and zoom when the page loads
 var savedPosition = JSON.parse(localStorage.getItem('mapPosition'));
 var savedZoom = localStorage.getItem('mapZoom');
@@ -150,9 +127,7 @@ function fetchFlightData() {
             '<br><b>Geo_Altitude:</b>' + geo_altitude + 'm');
         }
         addInfoBubble(map);
-
-      }
-      });
+      }});
     }
 // Fetch flight data for the first time
 fetchFlightData();
@@ -161,10 +136,8 @@ fetchFlightData();
 
 // AUTOREFRESH EVERY 5 SECONDS-------------------------------------------------
 setInterval(function() {
-  
   // remove all existing flight markers from the map
   map.removeObjects(map.getObjects());
-
   // call the addFlightsToMap function again to add the updated flight data to the map
   fetchFlightData();
 }, 5000);
@@ -174,68 +147,11 @@ setInterval(function() {
 // ADD REFRESH BUTTON----------------------------------------------------------
 const refreshButton = document.getElementById('refreshButton');
 refreshButton.addEventListener('click', () => {
-
  // remove all existing flight markers from the map
  map.removeObjects(map.getObjects());
-
  // call the addFlightsToMap function again to add the updated flight data to the map
  fetchFlightData();
 });
-
-
-
-/*
-//ZA PRIKAZ SAMO JEDNOG RANDOM AVIONA
-// ADDING DATA FROM OPENSKY PLATFORM ------------------------------------------
-// Retrieve flight data for Croatia
-const url = `https://opensky-network.org/api/states/all?lamin=44&lomin=9.5&lamax=46.5&lomax=19.4`;
-
-// Retrieve flight data using fetch
-fetch(url)
-  .then(response => response.json())
-  .then(data => {
-    // Parse flight data
-    const flights = data.states;
-    // Select a random flight
-    const randomIndex = Math.floor(Math.random() * flights.length);
-    const flight = flights[randomIndex];
-    // Extract flight information
-    const latitude = flight[6];
-    const longitude = flight[5];
-    const flightId = flight[0];
-    const baro_altitude = flight[7];
-    // Create a marker icon from an image URL:
-    var pngIcon = new H.map.Icon("https://cdn2.iconfinder.com/data/icons/business-development-6/24/Aircraft_transport_plane_transportation_airplane_travel-512.png", { size: { w: 40, h: 40 } });
-    
-    function addMarkerToGroup(group, coordinate, html) {
-      const marker = new H.map.Marker(coordinate, { icon: pngIcon });
-      marker.setData(html);
-      group.addObject(marker);
-      //map.addObject(marker);
-    }
-    function addInfoBubble(map) {
-      var group = new H.map.Group();
-    
-      map.addObject(group);
-      // add 'tap' event listener, that opens info bubble, to the group
-      group.addEventListener('tap', function (evt) {
-        // event target is the marker itself, group is a parent event target
-        // for all objects that it contains
-        var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
-          // read custom data
-          content: evt.target.getData()
-        });
-        // show info bubble
-        ui.addBubble(bubble);
-      }, false);
-    
-      addMarkerToGroup(group, {lat:latitude, lng:longitude},
-        '<div><a href="https://www.mcfc.co.uk">Manchester City</a></div>' +
-        '<div>City of Manchester Stadium<br />Capacity: 55,097</div>');
-    }
-    addInfoBubble(map);
-  });    
-*/
 
 
 
@@ -247,15 +163,6 @@ function randomLat() {
 function randomLng() {
   return Math.random() * (9.5) + 9.5;
 }
-
-
-/*
-function moveMapToRijeka(map){
-  map.setCenter({lat:45.328081, lng:14.4});
-  map.setZoom(9);
-}
-*/
-
 
 var plane = 0;
 function adddMarker() {
@@ -387,11 +294,3 @@ function rotateDomMarker() {
 function removeRotLine() {
   map.removeObject(marker);
 }
-
-
-/*
-// OPENING RADAR ON ANOTHER PAGE ----------------------------------------------
-function radarFunction() {
-  window.open("radar_1/radar.html", "_self");
- }
- */
